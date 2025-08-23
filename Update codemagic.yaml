@@ -1,0 +1,38 @@
+workflows:
+  ios-workflow:
+    name: iOS Build & TestFlight
+    environment:
+      vars:
+        XCODE_WORKSPACE: "ios/Runner.xcworkspace"
+        XCODE_SCHEME: "Runner"
+        APP_STORE_CONNECT_ISSUER_ID: Eneter-Your-Issuer-ID-Here
+        APP_STORE_CONNECT_KEY_IDENTIFIER: Enter-Key-ID-Here
+        APP_STORE_CONNECT_PRIVATE_KEY: Eneter-Your-Private-Key-Here
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Install dependencies
+        script: |
+          brew install cocoapods
+          pod install --project-directory=ios
+      - name: Build iOS app
+        script: |
+          xcodebuild -workspace "$XCODE_WORKSPACE" \
+          -scheme "$XCODE_SCHEME" \
+          -sdk iphoneos \
+          -configuration Release \
+          archive -archivePath $PWD/build/Runner.xcarchive
+      - name: Export IPA
+        script: |
+          xcodebuild -exportArchive \
+          -archivePath $PWD/build/Runner.xcarchive \
+          -exportOptionsPlist ios/exportOptions.plist \
+          -exportPath $PWD/build/ipa
+    artifacts:
+      - build/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        apple_id: "ramin.eslamin@yahoo.com"
+        team_id: "5VWV75YS97"
+        bundle_id: "com.shopidubai.app"
+        submit_to_testflight: true
