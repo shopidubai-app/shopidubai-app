@@ -1,0 +1,26 @@
+workflows:
+  ios-workflow:
+    name: iOS Build and Test
+    environment:
+      xcode: latest
+      vars:
+        APP_BUNDLE_ID: "com.shopidubai.app"
+        APP_NAME: "ShopiDubai"
+    scripts:
+      - name: Install dependencies
+        script: |
+          brew install cocoapods || true
+          pod install --repo-update
+      - name: Build iOS app
+        script: |
+          xcodebuild -workspace ios/Runner.xcworkspace \
+            -scheme Runner \
+            -sdk iphoneos \
+            -configuration Release \
+            archive -archivePath $CM_BUILD_DIR/Runner.xcarchive
+    artifacts:
+      - build/ios/ipa/*.ipa
+    publishing:
+      email:
+        recipients:
+          - "shopidubai.dev@gmail.com"
