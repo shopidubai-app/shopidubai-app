@@ -1,14 +1,19 @@
 platform :ios, '13.0'
 
-use_frameworks!
-use_modular_headers!
+require_relative '../node_modules/react-native/scripts/react_native_pods'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-target 'Runner' do
-  # Pods for Runner
-  pod 'Firebase/Core'
-  pod 'Firebase/Auth'
-  pod 'Firebase/Firestore'
+target 'ShopiDubai' do
+  config = use_native_modules!
 
-  # هر کتابخونه‌ای که بعداً لازم شد اینجا اضافه کن
+  use_react_native!(
+    :path => config["reactNativePath"]
+  )
+
+  # Example: Add Firebase or other pods here if needed
+  # pod 'Firebase/Core'
 end
 
+post_install do |installer|
+  react_native_post_install(installer)
+end
