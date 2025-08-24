@@ -3,13 +3,6 @@ platform :ios, '13.0'
 use_frameworks!
 use_modular_headers!
 
+# This is required for Flutter iOS build
 flutter_application_path = File.expand_path('..', __dir__)
-load File.join(flutter_application_path, '.flutter', 'packages', 'flutter_tools', 'bin', 'podhelper.rb')
-
-target 'Runner' do
-  flutter_ios_podfile_setup
-end
-
-post_install do |installer|
-  flutter_additional_ios_build_settings(installer)
-end
+eval(File.read(File.join(flutter_application_path, '.ios', 'Flutter', 'podhelper.rb')), binding)
