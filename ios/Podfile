@@ -5,5 +5,5 @@ target 'Runner' do
   use_modular_headers!
 
   flutter_application_path = '../'
-  eval(File.read(File.join(flutter_application_path, '.flutter-plugins-dependencies')))
+  eval(File.read(File.join(flutter_application_path, '.flutter', 'packages', 'flutter_tools', 'bin', 'podhelper.rb')), binding)
 end
