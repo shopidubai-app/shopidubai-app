@@ -5,25 +5,28 @@ workflows:
       vars:
         XCODE_WORKSPACE: "ios/Runner.xcworkspace"
         XCODE_SCHEME: "Runner"
-        APP_STORE_CONNECT_ISSUER_ID: Eneter-Your-Issuer-ID
-        APP_STORE_CONNECT_KEY_IDENTIFIER: Enter-Key-ID
-        APP_STORE_CONNECT_PRIVATE_KEY: Eneter-Your-Private-Key
-      xcode: latest
-      cocoapods: default
-    project_path: "ios"
+        APP_STORE_CONNECT_ISSUER_ID: "Enter-Your-Issuer-ID"
+        APP_STORE_CONNECT_KEY_IDENTIFIER: "Enter-Your-Key-ID"
+        APP_STORE_CONNECT_PRIVATE_KEY: "Enter-Your-Private-Key"
+        BUNDLE_ID: "com.shopidubai.app"
+        TEAM_ID: "5VWV75YS97"
     scripts:
-      - name: Install dependencies
+      - name: Install CocoaPods dependencies
         script: |
           cd ios
           pod install
-      - name: Build ipa
+      - name: Build iOS archive
         script: |
-          xcodebuild             -workspace "$XCODE_WORKSPACE"             -scheme "$XCODE_SCHEME"             -sdk iphoneos             -configuration Release             archive             -archivePath $CM_BUILD_DIR/ios_archive.xcarchive
-          xcodebuild             -exportArchive             -archivePath $CM_BUILD_DIR/ios_archive.xcarchive             -exportOptionsPlist ios/ExportOptions.plist             -exportPath $CM_BUILD_DIR/ipa
+          xcodebuild -workspace "$XCODE_WORKSPACE" \
+            -scheme "$XCODE_SCHEME" \
+            -sdk iphoneos \
+            -configuration Release \
+            -archivePath $CM_BUILD_DIR/ios/Runner.xcarchive archive
     artifacts:
-      - $CM_BUILD_DIR/ipa/*.ipa
+      - build/ios/ipa/*.ipa
+      - $CM_BUILD_DIR/ios/Runner.xcarchive
     publishing:
       app_store_connect:
-        api_key: $APP_STORE_CONNECT_API_KEY
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
         key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
         issuer_id: $APP_STORE_CONNECT_ISSUER_ID
