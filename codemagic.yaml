@@ -1,26 +1,32 @@
 workflows:
   ios-workflow:
-    name: iOS Build and Test
+    name: iOS Build & TestFlight
     environment:
-      xcode: latest
       vars:
-        APP_BUNDLE_ID: "com.shopidubai.app"
-        APP_NAME: "ShopiDubai"
+        XCODE_WORKSPACE: "Runner.xcworkspace"
+        XCODE_SCHEME: "Runner"
+        APP_STORE_CONNECT_ISSUER_ID: Eneter-Your-Issuer-ID
+        APP_STORE_CONNECT_KEY_IDENTIFIER: Enter-Key-ID
+        APP_STORE_CONNECT_PRIVATE_KEY: Eneter-Your-Private-Key
+      xcode: latest
+
+    project_path: "ios"
+
     scripts:
-      - name: Install dependencies
+      - name: Install CocoaPods
         script: |
-          brew install cocoapods || true
+          cd ios
           pod install --repo-update
-      - name: Build iOS app
+      - name: Build iOS
         script: |
-          xcodebuild -workspace ios/Runner.xcworkspace \
-            -scheme Runner \
-            -sdk iphoneos \
-            -configuration Release \
-            archive -archivePath $CM_BUILD_DIR/Runner.xcarchive
+          cd ios
+          xcodebuild -workspace Runner.xcworkspace -scheme Runner -sdk iphonesimulator -configuration Debug build
+
     artifacts:
-      - build/ios/ipa/*.ipa
+      - ios/build/**/*.app
+      - ios/build/**/*.ipa
+
     publishing:
-      email:
-        recipients:
-          - "shopidubai.dev@gmail.com"
+      app_store_connect:
+        apple_id: "Your-Apple-ID@email.com"
+        password: "app-specific-password"
